@@ -92,6 +92,11 @@
                                 <label class="btn btn-outline-primary" for="viewMonthly">
                                     <i class="bi bi-calendar-month"></i> รายเดือน
                                 </label>
+
+                                <input type="radio" class="btn-check" name="viewType" id="viewYearly" value="yearly">
+                                <label class="btn btn-outline-primary" for="viewYearly">
+                                    <i class="bi bi-calendar-range"></i> รายปี
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -108,6 +113,64 @@
 
             <!-- Charts Grid -->
             <div class="charts-grid">
+                <!-- Statistics Summary -->
+                <div class="stats-summary" id="statsSummary">
+                    <div class="stats-card" id="statsWeight">
+                        <div class="stats-icon"><i class="bi bi-speedometer"></i></div>
+                        <div class="stats-info">
+                            <span class="stats-label">น้ำหนักเฉลี่ย</span>
+                            <span class="stats-value" id="avgWeight">-</span>
+                            <span class="stats-unit">kg</span>
+                        </div>
+                        <span class="quality-badge" id="qualityWeight">-</span>
+                    </div>
+                    <div class="stats-card" id="statsHeight">
+                        <div class="stats-icon"><i class="bi bi-rulers"></i></div>
+                        <div class="stats-info">
+                            <span class="stats-label">ส่วนสูงเฉลี่ย</span>
+                            <span class="stats-value" id="avgHeight">-</span>
+                            <span class="stats-unit">cm</span>
+                        </div>
+                        <span class="quality-badge" id="qualityHeight">-</span>
+                    </div>
+                    <div class="stats-card" id="statsBmi">
+                        <div class="stats-icon"><i class="bi bi-bar-chart-line"></i></div>
+                        <div class="stats-info">
+                            <span class="stats-label">BMI เฉลี่ย</span>
+                            <span class="stats-value" id="avgBmi">-</span>
+                            <span class="stats-unit"></span>
+                        </div>
+                        <span class="quality-badge" id="qualityBmi">-</span>
+                    </div>
+                    <div class="stats-card" id="statsBp">
+                        <div class="stats-icon"><i class="bi bi-heart-pulse"></i></div>
+                        <div class="stats-info">
+                            <span class="stats-label">ความดันเฉลี่ย</span>
+                            <span class="stats-value" id="avgBp">-</span>
+                            <span class="stats-unit">mmHg</span>
+                        </div>
+                        <span class="quality-badge" id="qualityBp">-</span>
+                    </div>
+                    <div class="stats-card" id="statsSpo2">
+                        <div class="stats-icon"><i class="bi bi-lungs"></i></div>
+                        <div class="stats-info">
+                            <span class="stats-label">SpO2 เฉลี่ย</span>
+                            <span class="stats-value" id="avgSpo2">-</span>
+                            <span class="stats-unit">%</span>
+                        </div>
+                        <span class="quality-badge" id="qualitySpo2">-</span>
+                    </div>
+                    <div class="stats-card" id="statsSugar">
+                        <div class="stats-icon"><i class="bi bi-droplet-fill"></i></div>
+                        <div class="stats-info">
+                            <span class="stats-label">น้ำตาลเฉลี่ย</span>
+                            <span class="stats-value" id="avgSugar">-</span>
+                            <span class="stats-unit">mg/dL</span>
+                        </div>
+                        <span class="quality-badge" id="qualitySugar">-</span>
+                    </div>
+                </div>
+
                 <!-- Weight Chart -->
                 <div class="chart-card">
                     <div class="chart-header">
@@ -117,6 +180,20 @@
                         <canvas id="weightChart"></canvas>
                     </div>
                     <div class="chart-empty d-none" id="weightEmpty">
+                        <i class="bi bi-inbox"></i>
+                        <p>ยังไม่มีข้อมูล</p>
+                    </div>
+                </div>
+
+                <!-- Height Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="bi bi-rulers"></i> ส่วนสูง (cm)</h3>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="heightChart"></canvas>
+                    </div>
+                    <div class="chart-empty d-none" id="heightEmpty">
                         <i class="bi bi-inbox"></i>
                         <p>ยังไม่มีข้อมูล</p>
                     </div>
@@ -186,6 +263,19 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Health Recommendations -->
+            <section class="health-recommendations" id="healthRecommendations">
+                <div class="recommendations-header">
+                    <h2><i class="bi bi-clipboard2-pulse"></i> คำแนะนำสุขภาพ</h2>
+                </div>
+                <div class="recommendations-grid" id="recommendationsList">
+                    <div class="recommendation-item empty-recommendation">
+                        <i class="bi bi-lightbulb"></i>
+                        <p>กำลังวิเคราะห์ข้อมูลสุขภาพของคุณ...</p>
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
 

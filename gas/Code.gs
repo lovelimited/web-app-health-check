@@ -438,7 +438,10 @@ function aggregateData(records, viewType, numericFields) {
   
   records.forEach(record => {
     let key;
-    if (viewType === 'monthly') {
+    if (viewType === 'yearly') {
+      // ใช้ YYYY
+      key = record.date.substring(0, 4);
+    } else if (viewType === 'monthly') {
       // ใช้ YYYY-MM
       key = record.date.substring(0, 7);
     } else {
