@@ -1,0 +1,680 @@
+/**
+ * ====================================================
+ * Health Tracker - Stylesheet
+ * ====================================================
+ * Modern, responsive design with glassmorphism effects
+ */
+
+/* ====================================================
+   CSS Variables
+   ==================================================== */
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    
+    --text-dark: #2d3748;
+    --text-muted: #718096;
+    --text-light: #a0aec0;
+    
+    --bg-light: #f7fafc;
+    --bg-white: #ffffff;
+    
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+    --shadow-lg: 0 10px 40px rgba(0,0,0,0.1);
+    --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+    
+    --border-radius: 16px;
+    --border-radius-sm: 8px;
+    
+    --transition: all 0.3s ease;
+}
+
+/* ====================================================
+   Base Styles
+   ==================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    background: var(--bg-light);
+    color: var(--text-dark);
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* ====================================================
+   Login Page
+   ==================================================== */
+.login-page {
+    background: var(--primary-gradient);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 420px;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: var(--border-radius);
+    padding: 40px;
+    box-shadow: var(--shadow-xl);
+    animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--primary-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 36px;
+    color: white;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+.logo-icon.warning {
+    background: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%);
+    box-shadow: 0 10px 30px rgba(255, 193, 7, 0.4);
+}
+
+.login-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+.login-header p {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+/* ====================================================
+   Form Styles
+   ==================================================== */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.form-label i {
+    color: var(--primary-color);
+}
+
+.form-control {
+    padding: 14px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: var(--border-radius-sm);
+    font-size: 16px;
+    transition: var(--transition);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+    outline: none;
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper .form-control {
+    padding-right: 48px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+    transition: var(--transition);
+}
+
+.toggle-password:hover {
+    color: var(--primary-color);
+}
+
+.password-requirements {
+    margin-top: -8px;
+}
+
+/* ====================================================
+   Button Styles
+   ==================================================== */
+.btn-login {
+    padding: 14px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: var(--border-radius-sm);
+    background: var(--primary-gradient);
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+.btn-login:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-loader .spinner-border {
+    width: 18px;
+    height: 18px;
+    border-width: 2px;
+}
+
+/* ====================================================
+   Login Footer
+   ==================================================== */
+.login-footer {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+}
+
+.login-footer p {
+    color: var(--text-muted);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.version-info {
+    text-align: center;
+    margin-top: 24px;
+}
+
+.version-info p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+}
+
+/* ====================================================
+   Dashboard Page
+   ==================================================== */
+.dashboard-page {
+    background: var(--bg-light);
+    min-height: 100vh;
+}
+
+/* Navbar */
+.navbar {
+    background: var(--primary-gradient);
+    padding: 12px 20px;
+    box-shadow: var(--shadow-md);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.navbar-brand i {
+    font-size: 24px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 16px;
+}
+
+/* Dashboard Main */
+.dashboard-main {
+    padding: 30px 20px;
+}
+
+.dashboard-header {
+    margin-bottom: 30px;
+}
+
+.dashboard-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dashboard-header h1 i {
+    color: var(--primary-color);
+}
+
+.dashboard-header .text-muted {
+    margin-top: 4px;
+    font-size: 14px;
+}
+
+/* View Toggle */
+.view-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.view-toggle label {
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.btn-check:checked + .btn-outline-primary {
+    background: var(--primary-gradient);
+    border-color: var(--primary-color);
+}
+
+/* ====================================================
+   Loading Overlay
+   ==================================================== */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+}
+
+.loading-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.loading-overlay p {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* ====================================================
+   Charts Grid
+   ==================================================== */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 24px;
+}
+
+@media (max-width: 768px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.chart-card {
+    background: var(--bg-white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.chart-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+}
+
+.chart-card.chart-wide {
+    grid-column: span 2;
+}
+
+@media (max-width: 992px) {
+    .chart-card.chart-wide {
+        grid-column: span 1;
+    }
+}
+
+.chart-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.chart-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+
+.chart-header h3 i {
+    color: var(--primary-color);
+    font-size: 20px;
+}
+
+.chart-legend {
+    display: flex;
+    gap: 16px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.legend-sys .legend-dot {
+    background: #dc3545;
+}
+
+.legend-dia .legend-dot {
+    background: #007bff;
+}
+
+.chart-body {
+    padding: 20px 24px;
+    height: 300px;
+}
+
+.chart-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+}
+
+.chart-empty i {
+    font-size: 48px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+.chart-empty p {
+    font-size: 14px;
+}
+
+/* ====================================================
+   Admin Page
+   ==================================================== */
+.admin-card {
+    background: var(--bg-white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    padding: 0;
+    overflow: hidden;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-dark);
+    border-bottom: 2px solid #e2e8f0;
+    padding: 16px 20px;
+}
+
+.table td {
+    padding: 14px 20px;
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+.table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.empty-state {
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.empty-state i {
+    font-size: 64px;
+    margin-bottom: 16px;
+    opacity: 0.3;
+}
+
+.empty-state p {
+    font-size: 16px;
+}
+
+/* ====================================================
+   Alerts
+   ==================================================== */
+.alert {
+    border: none;
+    border-radius: var(--border-radius-sm);
+}
+
+.alert-warning {
+    background: #fff3cd;
+    color: #856404;
+}
+
+/* ====================================================
+   Responsive
+   ==================================================== */
+@media (max-width: 576px) {
+    .login-card {
+        padding: 30px 24px;
+    }
+    
+    .login-header h1 {
+        font-size: 24px;
+    }
+    
+    .logo-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 30px;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 22px;
+    }
+    
+    .chart-body {
+        height: 250px;
+    }
+    
+    .navbar-brand {
+        font-size: 16px;
+    }
+    
+    .user-info {
+        display: none;
+    }
+}
+
+/* ====================================================
+   Animations
+   ==================================================== */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.loading-overlay .spinner-border {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ====================================================
+   Scrollbar
+   ==================================================== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* ====================================================
+   PWA Install Banner
+   ==================================================== */
+.install-banner {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary-gradient);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 50px;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 1000;
+    animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.install-banner button {
+    background: white;
+    color: var(--primary-color);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.install-banner button:hover {
+    transform: scale(1.05);
+}
