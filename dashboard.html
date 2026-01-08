@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Health Tracker</title>
+    <meta name="description" content="ระบบติดตามสุขภาพรายบุคคล - แดชบอร์ด">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#667eea">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- SweetAlert2 -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body class="dashboard-page">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-heart-pulse-fill"></i>
+                Health Tracker
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="dashboard.html">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item admin-only d-none">
+                        <a class="nav-link" href="admin.html">
+                            <i class="bi bi-gear-fill"></i> จัดการผู้ใช้
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="navbar-nav">
+                    <span class="nav-link user-info">
+                        <i class="bi bi-person-circle"></i>
+                        <span id="navUsername">-</span>
+                    </span>
+                    <button class="btn btn-outline-light btn-sm" id="logoutBtn">
+                        <i class="bi bi-box-arrow-right"></i> ออกจากระบบ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <div class="container-fluid">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h1><i class="bi bi-activity"></i> สถิติสุขภาพของคุณ</h1>
+                        <p class="text-muted">ข้อมูลการติดตามสุขภาพรายบุคคล</p>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="view-toggle">
+                            <label class="me-2">มุมมอง:</label>
+                            <div class="btn-group" role="group">
+                                <input type="radio" class="btn-check" name="viewType" id="viewDaily" value="daily"
+                                    checked>
+                                <label class="btn btn-outline-primary" for="viewDaily">
+                                    <i class="bi bi-calendar-day"></i> รายวัน
+                                </label>
+
+                                <input type="radio" class="btn-check" name="viewType" id="viewMonthly" value="monthly">
+                                <label class="btn btn-outline-primary" for="viewMonthly">
+                                    <i class="bi bi-calendar-month"></i> รายเดือน
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Overlay -->
+            <div id="loadingOverlay" class="loading-overlay">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">กำลังโหลด...</span>
+                </div>
+                <p>กำลังโหลดข้อมูล...</p>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="charts-grid">
+                <!-- Weight Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="bi bi-speedometer"></i> น้ำหนัก (kg)</h3>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="weightChart"></canvas>
+                    </div>
+                    <div class="chart-empty d-none" id="weightEmpty">
+                        <i class="bi bi-inbox"></i>
+                        <p>ยังไม่มีข้อมูล</p>
+                    </div>
+                </div>
+
+                <!-- BMI Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="bi bi-bar-chart-line"></i> ค่าดัชนีมวลกาย (BMI)</h3>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="bmiChart"></canvas>
+                    </div>
+                    <div class="chart-empty d-none" id="bmiEmpty">
+                        <i class="bi bi-inbox"></i>
+                        <p>ยังไม่มีข้อมูล</p>
+                    </div>
+                </div>
+
+                <!-- Blood Pressure Chart -->
+                <div class="chart-card chart-wide">
+                    <div class="chart-header">
+                        <h3><i class="bi bi-heart-pulse"></i> ความดันโลหิต (mmHg)</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item legend-sys">
+                                <span class="legend-dot"></span> SYS (ตัวบน)
+                            </span>
+                            <span class="legend-item legend-dia">
+                                <span class="legend-dot"></span> DIA (ตัวล่าง)
+                            </span>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="bpChart"></canvas>
+                    </div>
+                    <div class="chart-empty d-none" id="bpEmpty">
+                        <i class="bi bi-inbox"></i>
+                        <p>ยังไม่มีข้อมูล</p>
+                    </div>
+                </div>
+
+                <!-- SpO2 Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="bi bi-lungs"></i> ออกซิเจนในเลือด (SpO2 %)</h3>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="spo2Chart"></canvas>
+                    </div>
+                    <div class="chart-empty d-none" id="spo2Empty">
+                        <i class="bi bi-inbox"></i>
+                        <p>ยังไม่มีข้อมูล</p>
+                    </div>
+                </div>
+
+                <!-- Blood Sugar Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="bi bi-droplet-fill"></i> น้ำตาลในเลือด (mg/dL)</h3>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="sugarChart"></canvas>
+                    </div>
+                    <div class="chart-empty d-none" id="sugarEmpty">
+                        <i class="bi bi-inbox"></i>
+                        <p>ยังไม่มีข้อมูล</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/pwa.js"></script>
+
+    <script>
+        // Global state
+        let currentViewType = 'daily';
+
+        // Check authentication
+        document.addEventListener('DOMContentLoaded', async () => {
+            const isAuth = await checkAuth();
+            if (!isAuth) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Display username
+            const username = sessionStorage.getItem('username');
+            const role = sessionStorage.getItem('role');
+            document.getElementById('navUsername').textContent = username || 'ผู้ใช้';
+
+            // Show admin menu if admin
+            if (role === 'admin') {
+                document.querySelectorAll('.admin-only').forEach(el => {
+                    el.classList.remove('d-none');
+                });
+            }
+
+            // Load initial data
+            await loadHealthData('daily');
+        });
+
+        // View type toggle
+        document.querySelectorAll('input[name="viewType"]').forEach(radio => {
+            radio.addEventListener('change', async (e) => {
+                currentViewType = e.target.value;
+                await loadHealthData(currentViewType);
+            });
+        });
+
+        // Logout handler
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            const result = await Swal.fire({
+                title: 'ออกจากระบบ?',
+                text: 'คุณต้องการออกจากระบบหรือไม่?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#667eea',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'ออกจากระบบ',
+                cancelButtonText: 'ยกเลิก'
+            });
+
+            if (result.isConfirmed) {
+                await logout();
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Load health data
+        async function loadHealthData(viewType) {
+            showLoading(true);
+
+            try {
+                const token = getToken();
+                const result = await callAPI('getMyTimeline', { token, viewType });
+
+                if (result.success) {
+                    renderAllCharts(result.data);
+                } else {
+                    if (result.error && result.error.includes('Session')) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Session หมดอายุ',
+                            text: 'กรุณาเข้าสู่ระบบใหม่',
+                            confirmButtonColor: '#667eea'
+                        }).then(() => {
+                            clearSession();
+                            window.location.href = 'login.html';
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'เกิดข้อผิดพลาด',
+                            text: result.error || 'ไม่สามารถโหลดข้อมูลได้',
+                            confirmButtonColor: '#667eea'
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Load data error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้',
+                    confirmButtonColor: '#667eea'
+                });
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Show/hide loading overlay
+        function showLoading(show) {
+            const overlay = document.getElementById('loadingOverlay');
+            if (show) {
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
+        }
+    </script>
+</body>
+
+</html>

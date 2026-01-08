@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบ - Health Tracker</title>
+    <meta name="description" content="ระบบติดตามสุขภาพรายบุคคล - เข้าสู่ระบบ">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#667eea">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- SweetAlert2 -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Logo & Header -->
+            <div class="login-header">
+                <div class="logo-icon">
+                    <i class="bi bi-heart-pulse-fill"></i>
+                </div>
+                <h1>Health Tracker</h1>
+                <p>ระบบติดตามสุขภาพรายบุคคล</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="username" class="form-label">
+                        <i class="bi bi-person-fill"></i> ชื่อผู้ใช้
+                    </label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="กรอกชื่อผู้ใช้"
+                        required autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="bi bi-lock-fill"></i> รหัสผ่าน
+                    </label>
+                    <div class="password-wrapper">
+                        <input type="password" class="form-control" id="password" name="password"
+                            placeholder="กรอกรหัสผ่าน" required autocomplete="current-password">
+                        <button type="button" class="toggle-password" id="togglePassword">
+                            <i class="bi bi-eye-fill"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-login" id="loginBtn">
+                    <span class="btn-text">เข้าสู่ระบบ</span>
+                    <span class="btn-loader d-none">
+                        <span class="spinner-border spinner-border-sm" role="status"></span>
+                        กำลังเข้าสู่ระบบ...
+                    </span>
+                </button>
+            </form>
+
+            <!-- Footer -->
+            <div class="login-footer">
+                <p>
+                    <i class="bi bi-info-circle"></i>
+                    หากลืมรหัสผ่าน กรุณาติดต่อผู้ดูแลระบบ
+                </p>
+            </div>
+        </div>
+
+        <!-- Version Info -->
+        <div class="version-info">
+            <p>Health Tracker v1.0.0</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/pwa.js"></script>
+
+    <script>
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = getToken();
+            if (token) {
+                // Verify token is still valid
+                const profile = await callAPI('getMyProfile', { token });
+                if (profile.success) {
+                    window.location.href = 'dashboard.html';
+                    return;
+                } else {
+                    // Token expired, clear it
+                    clearSession();
+                }
+            }
+        });
+
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye-fill');
+                icon.classList.add('bi-eye-slash-fill');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye-slash-fill');
+                icon.classList.add('bi-eye-fill');
+            }
+        });
+
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+
+            // Validate
+            if (!username || !password) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'กรุณากรอกข้อมูล',
+                    text: 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน',
+                    confirmButtonColor: '#667eea'
+                });
+                return;
+            }
+
+            // Show loading
+            loginBtn.disabled = true;
+            loginBtn.querySelector('.btn-text').classList.add('d-none');
+            loginBtn.querySelector('.btn-loader').classList.remove('d-none');
+
+            try {
+                const result = await login(username, password);
+
+                if (result.success) {
+                    // Store token
+                    setSession(result.token, result.role, result.username);
+
+                    // Check if must change password
+                    if (result.mustChangePassword) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'ต้องเปลี่ยนรหัสผ่าน',
+                            text: 'กรุณาตั้งรหัสผ่านใหม่เพื่อความปลอดภัย',
+                            confirmButtonColor: '#667eea'
+                        }).then(() => {
+                            window.location.href = 'change_password.html';
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'เข้าสู่ระบบสำเร็จ',
+                            text: `ยินดีต้อนรับ ${result.username}`,
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            // Redirect based on role
+                            if (result.role === 'admin') {
+                                window.location.href = 'dashboard.html';
+                            } else {
+                                window.location.href = 'dashboard.html';
+                            }
+                        });
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เข้าสู่ระบบไม่สำเร็จ',
+                        text: result.error || 'กรุณาตรวจสอบข้อมูลอีกครั้ง',
+                        confirmButtonColor: '#667eea'
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้',
+                    confirmButtonColor: '#667eea'
+                });
+                console.error('Login error:', error);
+            } finally {
+                // Hide loading
+                loginBtn.disabled = false;
+                loginBtn.querySelector('.btn-text').classList.remove('d-none');
+                loginBtn.querySelector('.btn-loader').classList.add('d-none');
+            }
+        });
+    </script>
+</body>
+
+</html>

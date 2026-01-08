@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>จัดการผู้ใช้ - Health Tracker</title>
+    <meta name="description" content="ระบบติดตามสุขภาพรายบุคคล - จัดการผู้ใช้">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#667eea">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- SweetAlert2 -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body class="dashboard-page">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-heart-pulse-fill"></i>
+                Health Tracker
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="admin.html">
+                            <i class="bi bi-gear-fill"></i> จัดการผู้ใช้
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="navbar-nav">
+                    <span class="nav-link user-info">
+                        <i class="bi bi-person-circle"></i>
+                        <span id="navUsername">-</span>
+                        <span class="badge bg-warning text-dark ms-1">Admin</span>
+                    </span>
+                    <button class="btn btn-outline-light btn-sm" id="logoutBtn">
+                        <i class="bi bi-box-arrow-right"></i> ออกจากระบบ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <div class="container-fluid">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h1><i class="bi bi-people-fill"></i> จัดการผู้ใช้งาน</h1>
+                        <p class="text-muted">รายชื่อผู้ใช้งานทั้งหมดในระบบ</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <button class="btn btn-primary" id="refreshBtn">
+                            <i class="bi bi-arrow-clockwise"></i> รีเฟรช
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div id="loadingOverlay" class="loading-overlay">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">กำลังโหลด...</span>
+                </div>
+                <p>กำลังโหลดข้อมูล...</p>
+            </div>
+
+            <!-- Users Table -->
+            <div class="admin-card">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th><i class="bi bi-hash"></i> ID</th>
+                                <th><i class="bi bi-person"></i> Username</th>
+                                <th><i class="bi bi-shield"></i> Role</th>
+                                <th><i class="bi bi-key"></i> ต้องเปลี่ยนรหัส</th>
+                                <th><i class="bi bi-gear"></i> จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Empty state -->
+                <div class="empty-state d-none" id="emptyState">
+                    <i class="bi bi-inbox"></i>
+                    <p>ไม่พบข้อมูลผู้ใช้</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/pwa.js"></script>
+
+    <script>
+        // Check authentication and admin role
+        document.addEventListener('DOMContentLoaded', async () => {
+            const isAuth = await checkAuth();
+            if (!isAuth) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const role = sessionStorage.getItem('role');
+            if (role !== 'admin') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ไม่มีสิทธิ์เข้าถึง',
+                    text: 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้',
+                    confirmButtonColor: '#667eea'
+                }).then(() => {
+                    window.location.href = 'dashboard.html';
+                });
+                return;
+            }
+
+            // Display username
+            const username = sessionStorage.getItem('username');
+            document.getElementById('navUsername').textContent = username || 'Admin';
+
+            // Load users
+            await loadUsers();
+        });
+
+        // Refresh button
+        document.getElementById('refreshBtn').addEventListener('click', async () => {
+            await loadUsers();
+        });
+
+        // Logout handler
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            const result = await Swal.fire({
+                title: 'ออกจากระบบ?',
+                text: 'คุณต้องการออกจากระบบหรือไม่?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#667eea',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'ออกจากระบบ',
+                cancelButtonText: 'ยกเลิก'
+            });
+
+            if (result.isConfirmed) {
+                await logout();
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+
+</html>
