@@ -5,7 +5,7 @@
  * Cache และ Offline Support สำหรับ PWA
  */
 
-const CACHE_NAME = 'health-tracker-v1.0.1';
+const CACHE_NAME = 'health-tracker-v1.0.2';
 const CACHE_URLS = [
     './',
     './index.html',
@@ -84,6 +84,11 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
     const requestURL = new URL(event.request.url);
+
+    // Skip non-http(s) requests (e.g., chrome-extension://)
+    if (!requestURL.protocol.startsWith('http')) {
+        return;
+    }
 
     // Skip API calls (Google Apps Script)
     if (requestURL.hostname === 'script.google.com' ||

@@ -14,6 +14,7 @@
 ## 🛠️ Technology Stack
 
 ### Frontend
+
 - HTML5, CSS3, JavaScript
 - Bootstrap 5
 - Chart.js
@@ -21,12 +22,13 @@
 - PWA (Progressive Web App)
 
 ### Backend
+
 - Google Apps Script (GAS)
 - Google Sheets (Database)
 
 ## 📁 Project Structure
 
-```
+```text
 /
 ├── index.html              # Redirect page
 ├── login.html              # Login page
@@ -57,25 +59,30 @@
 1. สร้าง Google Sheets ใหม่
 2. สร้าง 5 Sheets ตามโครงสร้างนี้:
 
-**Sheet: user**
-| user_id | username | password_hash | role | must_change_password |
-|---------|----------|---------------|------|---------------------|
-| 1       | admin    | [hash]        | admin| FALSE               |
-| 2       | user1    | [hash]        | user | FALSE               |
+#### Sheet: user
 
-**Sheet: น้ำหนัก-ส่วนสูง-bmi**
+| user_id | username | password_hash | role  | must_change_password |
+|---------|----------|---------------|-------|----------------------|
+| 1       | admin    | [hash]        | admin | FALSE                |
+| 2       | user1    | [hash]        | user  | FALSE                |
+
+#### Sheet: น้ำหนัก-ส่วนสูง-bmi
+
 | user_id | date | weight | height | bmi |
 |---------|------|--------|--------|-----|
 
-**Sheet: ความดันโลหิต**
+#### Sheet: ความดันโลหิต
+
 | user_id | date | sys | dia | pul | status |
 |---------|------|-----|-----|-----|--------|
 
-**Sheet: O2ในเลือด**
+#### Sheet: O2ในเลือด
+
 | user_id | date | spo2 |
 |---------|------|------|
 
-**Sheet: น้ำตาลในเลือด**
+#### Sheet: น้ำตาลในเลือด
+
 | user_id | date | sugar |
 |---------|------|-------|
 
@@ -148,14 +155,17 @@ function testHash() {
 ## 🔧 Troubleshooting
 
 ### ปัญหา: Login ไม่ได้
+
 - ตรวจสอบ `API_URL` ใน `js/api.js`
 - ตรวจสอบว่า Deploy web app เป็น "Anyone" access
 
 ### ปัญหา: ข้อมูลไม่แสดง
+
 - ตรวจสอบ `SPREADSHEET_ID` ใน `Code.gs`
 - ตรวจสอบชื่อ Sheet ตรงกับที่กำหนด
 
 ### ปัญหา: Session หมดอายุเร็ว
+
 - แก้ไข `TOKEN_EXPIRY_SECONDS` ใน `Code.gs`
 
 ## 📝 License
