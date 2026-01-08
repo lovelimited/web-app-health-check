@@ -12,7 +12,7 @@
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', async () => {
         try {
-            const registration = await navigator.serviceWorker.register('/service-worker.js');
+            const registration = await navigator.serviceWorker.register('./service-worker.js');
             console.log('ServiceWorker registered:', registration.scope);
 
             // Check for updates

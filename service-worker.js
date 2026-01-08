@@ -5,23 +5,23 @@
  * Cache และ Offline Support สำหรับ PWA
  */
 
-const CACHE_NAME = 'health-tracker-v1.0.0';
+const CACHE_NAME = 'health-tracker-v1.0.1';
 const CACHE_URLS = [
-    '/',
-    '/index.html',
-    '/login.html',
-    '/dashboard.html',
-    '/change_password.html',
-    '/admin.html',
-    '/css/style.css',
-    '/js/api.js',
-    '/js/auth.js',
-    '/js/charts.js',
-    '/js/admin.js',
-    '/js/pwa.js',
-    '/manifest.json',
-    '/icons/icon-192x192.png',
-    '/icons/icon-512x512.png',
+    './',
+    './index.html',
+    './login.html',
+    './dashboard.html',
+    './change_password.html',
+    './admin.html',
+    './css/style.css',
+    './js/api.js',
+    './js/auth.js',
+    './js/charts.js',
+    './js/admin.js',
+    './js/pwa.js',
+    './manifest.json',
+    './icons/icon-192x192.png',
+    './icons/icon-512x512.png',
     // External CDN resources
     'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css',
     'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css',
@@ -119,7 +119,7 @@ self.addEventListener('fetch', (event) => {
 
                         // If no cache found, return offline page for HTML requests
                         if (event.request.headers.get('accept').includes('text/html')) {
-                            return caches.match('/login.html');
+                            return caches.match('./login.html');
                         }
 
                         return new Response('Offline', {
@@ -140,8 +140,8 @@ self.addEventListener('push', (event) => {
 
     const options = {
         body: event.data ? event.data.text() : 'มีข้อความใหม่',
-        icon: '/icons/icon-192x192.png',
-        badge: '/icons/icon-72x72.png',
+        icon: './icons/icon-192x192.png',
+        badge: './icons/icon-192x192.png',
         vibrate: [100, 50, 100],
         data: {
             dateOfArrival: Date.now(),
@@ -163,6 +163,6 @@ self.addEventListener('notificationclick', (event) => {
     event.notification.close();
 
     event.waitUntil(
-        clients.openWindow('/dashboard.html')
+        clients.openWindow('./dashboard.html')
     );
 });
